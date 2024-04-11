@@ -1,0 +1,67 @@
+.draggable-wrapper {
+  width: 80%;
+  height: calc(100vh - 50px);
+  margin: 0 auto;
+  position: relative;
+}
+
+.draggable-container {
+  min-width: 300px;
+  min-height: 350px;
+  max-width: fit-content;
+  max-height: fit-content;
+
+  .handle {
+    background-color: lightblue;
+    &:hover {
+      cursor: move;
+    }
+  }
+}
+
+h1 {
+  color: red;
+}
+
+.openBtn {
+  position: relative;
+}
+
+.box {
+  width: auto;
+  position: absolute;
+  transition: opacity 0.5s, transform 0.5s;
+  transform-origin: top right;
+  top: 0;
+  left: 0;
+  background-color: #ffffff;
+}
+
+.animationOpen {
+  animation: popUpAnimation 1s forwards;
+}
+.animationClose {
+  animation: popDownAnimation 1s forwards;
+}
+
+@keyframes popUpAnimation {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes popDownAnimation {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0);
+    opacity: 0;
+  }
+}

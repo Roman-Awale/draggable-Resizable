@@ -36,3 +36,9 @@
     transform: rotate(360deg);
   }
 }
+
+/* .draggable-textarea {
+  position: relative;
+  left: var(--leftPos, 0);
+  top: var(--topPos, 0);
+} */
