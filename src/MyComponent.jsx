@@ -2,66 +2,40 @@ import React, { useEffect, useRef, useState } from "react";
 import anime from "animejs/lib/anime.es.js";
 import Draggable from "react-draggable";
 import { Resizable } from "react-resizable";
-import { easeOut } from "framer-motion";
 
 const MyComponent = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [position, setPosition] = useState({ x: 0, y: 0 });
 
   const handleOpen = () => {
     setIsOpen(true);
-    // anime({
-    //   targets: ".my-component .el",
-    //   translateX: 100,
-    //   translateY: 100,
-    //   scale: 2,
-    //   duration: 500,
-    //   easing: "easeOutQuad",
-    // });
   };
 
   const handleClose = () => {
-    if (triggerRef.current !== null) {
-      setInitialX(triggerRef.current.offsetLeft);
-      setInitialY(triggerRef.current.offsetTop);
-      console.log("yo");
-      console.log(initialX, initialY);
-    }
+    const buttonRect = triggerRef.current.getBoundingClientRect();
+
     anime({
       targets: ".my-component .el",
-      position: `${(initialX + "px", initialY + "px")}`,
-      duration: 5000,
+      translateX: buttonRect.left - position.x,
+      translateY: buttonRect.top - position.y,
+      duration: 500,
       easing: "easeOutQuad",
+      complete: () => {
+        setIsOpen(false);
+      },
     });
-
-    setTimeout(() => {
-      setIsOpen(false);
-    }, 50000);
   };
 
-  useEffect(() => {
-    if (isOpen) {
-      anime({
-        targets: ".my-component .el",
-        translateX: 10,
-        translateY: 10,
-        scale: 1,
-        duration: 500,
-        easing: "easeOutQuad",
-      });
-    }
-  }, [isOpen]);
+  const handleDrag = (e, data) => {
+    setPosition({ x: data.x, y: data.y });
+  };
 
   const triggerRef = useRef(null);
 
-  const [initialX, setInitialX] = useState(0);
-  const [initialY, setInitialY] = useState(0);
-
   useEffect(() => {
     if (triggerRef.current !== null) {
-      setInitialX(triggerRef.current.offsetLeft);
-      setInitialY(triggerRef.current.offsetTop);
-
-      console.log(initialX, initialY);
+      const rect = triggerRef.current.getBoundingClientRect();
+      setPosition({ x: rect.left, y: rect.top });
     }
   }, [triggerRef]);
 
@@ -75,8 +49,9 @@ const MyComponent = () => {
         <Draggable
           axis="both"
           handle=".handle"
-          defaultPosition={{ x: initialX, y: initialY }}
+          defaultPosition={{ x: position.x, y: position.y }}
           bounds="body"
+          onDrag={handleDrag}
         >
           <Resizable width={10} height={10}>
             <div
