@@ -17,13 +17,20 @@ code {
   height: 100vh;
 }
 
+.my-component button {
+  float: right;
+}
+
 .component-container {
-  min-width: 300px;
-  min-height: 350px;
   max-width: 450px;
   max-height: 500px;
 }
 
 .handle {
   background: skyblue;
+}
+
+.el {
+  transform-origin: top left;
+  position: absolute;
 }

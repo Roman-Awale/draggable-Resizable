@@ -5,7 +5,7 @@ import { Resizable } from "react-resizable";
 
 const MyComponent = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [position, setPosition] = useState(null);
 
   const handleOpen = () => {
     setIsOpen(true);
@@ -16,12 +16,19 @@ const MyComponent = () => {
 
     anime({
       targets: ".my-component .el",
+      overflow: "hidden",
+      minWidth: 0,
+      minHeight: 0,
+      height: 20,
+      width: 45,
       translateX: buttonRect.left - position.x,
       translateY: buttonRect.top - position.y,
-      duration: 500,
+      duration: 300,
       easing: "easeOutQuad",
       complete: () => {
         setIsOpen(false);
+        const rect = triggerRef.current.getBoundingClientRect();
+        setPosition({ x: rect.left, y: rect.top });
       },
     });
   };
@@ -33,11 +40,28 @@ const MyComponent = () => {
   const triggerRef = useRef(null);
 
   useEffect(() => {
-    if (triggerRef.current !== null) {
+    if (triggerRef.current !== null && !isOpen) {
       const rect = triggerRef.current.getBoundingClientRect();
       setPosition({ x: rect.left, y: rect.top });
     }
-  }, [triggerRef]);
+  }, [isOpen]);
+
+  useEffect(() => {
+    if (!isOpen) {
+      return;
+    } else {
+      anime({
+        targets: ".el",
+        scale: 0,
+        duration: 0,
+      });
+
+      anime({
+        targets: ".el",
+        scale: [{ value: 1, easing: "easeOutQuad", duration: 200 }],
+      });
+    }
+  }, [isOpen]);
 
   return (
     <div className="my-component">
@@ -50,7 +74,7 @@ const MyComponent = () => {
           axis="both"
           handle=".handle"
           defaultPosition={{ x: position.x, y: position.y }}
-          bounds="body"
+          bounds="parent"
           onDrag={handleDrag}
         >
           <Resizable width={10} height={10}>
@@ -60,7 +84,7 @@ const MyComponent = () => {
                 border: "1px solid #ddd",
                 resize: "both",
                 overflow: "auto",
-                transform: "scale(0)",
+                transitionTimingFunction: "ease-out",
               }}
             >
               <div className="handle">
