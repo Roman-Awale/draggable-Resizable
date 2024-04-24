@@ -12,14 +12,10 @@ code {
     monospace;
 }
 
-.my-component {
+/* .my-component {
   width: 100vw;
   height: 100vh;
-}
-
-.my-component button {
-  float: right;
-}
+} */
 
 .component-container {
   max-width: 450px;

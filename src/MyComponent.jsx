@@ -74,7 +74,7 @@ const MyComponent = () => {
           axis="both"
           handle=".handle"
           defaultPosition={{ x: position.x, y: position.y }}
-          bounds="parent"
+          bounds="body"
           onDrag={handleDrag}
         >
           <Resizable width={10} height={10}>
