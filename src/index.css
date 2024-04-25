@@ -11,8 +11,8 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
-
-/* .my-component {
+/* 
+.my-component {
   width: 100vw;
   height: 100vh;
 } */
@@ -26,7 +26,11 @@ code {
   background: skyblue;
 }
 
+.open-btn {
+  position: relative;
+}
+
 .el {
-  transform-origin: top left;
-  position: absolute;
+  transform-origin: top right;
+  position: fixed;
 }

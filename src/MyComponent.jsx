@@ -5,19 +5,33 @@ import { Resizable } from "react-resizable";
 
 const MyComponent = (props) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [position, setPosition] = useState(null);
+  const [position, setPosition] = useState({ x: 0, y: 0 });
   const [minWidth, setminWidth] = useState(200);
+  const [minHeight, setMinHeight] = useState(200);
+  const [triggerBtnHeight, setTriggerBtnHeight] = useState(0);
+
   const handleOpen = () => {
     setIsOpen(true);
   };
 
   const handleClose = () => {
     const buttonRect = triggerRef.current.getBoundingClientRect();
+    const containerRect = containerRef.current;
+    const transformValue = containerRect.style.transform;
+    var translateX = 0;
+    var translateY = 0;
+
+    var translateMatch = transformValue.match(/translate\(([^,]+),([^)]+)\)/);
+    if (translateMatch) {
+      translateX = parseFloat(translateMatch[1]);
+      translateY = parseFloat(translateMatch[2]);
+    }
+    console.log(translateX, translateY);
 
     anime({
       targets: ".my-component .el",
-      // translateX: buttonRect.left - position.x,
-      // translateY: buttonRect.top - position.y,
+      translateX: -translateX,
+      translateY: -translateY,
       overflow: "hidden",
       minWidth: 0,
       minHeight: 0,
@@ -31,18 +45,19 @@ const MyComponent = (props) => {
         setPosition({ x: rect.left, y: rect.top });
       },
     });
-  };
-
-  const handleDrag = (e, data) => {
-    // setPosition({ x: data.x, y: data.y });
+    console.log(buttonRect);
   };
 
   const triggerRef = useRef(null);
+  const containerRef = useRef(null);
 
   useEffect(() => {
     if (triggerRef.current !== null && !isOpen) {
       const rect = triggerRef.current.getBoundingClientRect();
-      setPosition({ x: rect.left - minWidth, y: rect.top });
+      setPosition({
+        x: rect.left,
+        y: rect.bottom,
+      });
     }
   }, [isOpen]);
 
@@ -63,11 +78,19 @@ const MyComponent = (props) => {
     }
   }, [isOpen]);
 
-  console.log(triggerRef);
+  useEffect(() => {
+    const buttonRect = triggerRef.current.getBoundingClientRect();
+    setTriggerBtnHeight(buttonRect.height);
+  }, []);
 
   return (
     <div className="my-component" style={props.wrapperStyles}>
-      <button onClick={handleOpen} ref={triggerRef} style={props.triggerStyles}>
+      <button
+        onClick={handleOpen}
+        ref={triggerRef}
+        style={props.triggerStyles}
+        className="open-btn"
+      >
         {props.openText || "open"}
       </button>
 
@@ -76,11 +99,13 @@ const MyComponent = (props) => {
           axis="both"
           handle=".handle"
           bounds="body"
-          onDrag={handleDrag}
+          defaultPosition={{ x: -minWidth, y: -triggerBtnHeight }}
         >
           <Resizable>
             <div
-              className="component-container el"
+              className="component-container el "
+              id="myDiv"
+              ref={containerRef}
               style={{
                 border: "1px solid #ddd",
                 resize: "both",
@@ -88,6 +113,7 @@ const MyComponent = (props) => {
                 transitionTimingFunction: "ease-out",
                 left: position.x,
                 minWidth: minWidth,
+                minHeight: minHeight,
                 top: position.y,
               }}
             >
